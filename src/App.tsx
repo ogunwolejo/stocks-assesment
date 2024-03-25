@@ -1,26 +1,49 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, Fragment, useEffect, Suspense, lazy} from 'react';
+import {Routes, Route} from 'react-router-dom';
+import Loader from '@/component/ui/atoms/Loader';
+import Dashboard from '@/layout/dashboard';
+import routes from '@/routes';
+
+const DailyStockPage = lazy(async () => import('@/views/stocks/DailyStock'));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [loading, setLoading] = useState<boolean>(true);
+	useEffect(() => {
+		setTimeout(() => {
+			setLoading(false);
+		}, 3000);
+	}, []);
+
+	return loading ? (
+		<Loader />
+	) : (
+		<Fragment>
+			<Routes>
+				<Route path={'/'} element={<Dashboard />} >
+					{/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
+					<Route index element={
+						<Suspense fallback={<Loader/>}>
+							<DailyStockPage/>
+						</Suspense>
+					}/>
+					{routes.map((route, index: number) => {
+						const {path, component: Component} = route;
+						return (
+							<Route
+								key={index}
+								path={`:${path}`}
+								element={
+									<Suspense fallback={<Loader />}>
+										<Component />
+									</Suspense>
+								}
+							/>
+						);
+					})}
+				</Route>
+			</Routes>
+		</Fragment>
+	);
 }
 
 export default App;
