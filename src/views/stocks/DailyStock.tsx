@@ -1,4 +1,4 @@
-import React, {ReactNode, useMemo, useState} from 'react';
+import React, {type ReactNode, useMemo, useState} from 'react';
 import {useStock} from '@/hooks/useStock';
 import {StockFetchType} from '@/types/fetch.stock';
 import Loader from '@/component/ui/atoms/Loader';
@@ -45,7 +45,7 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 			element: (
 				<div className='bg-transparent grid grid-cols-1 md:grid-cols-2  gap-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-6 xl:gap-2'>
 					{data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((el, idx: number) => (
-						<Modal id={idx.toString()} items={el}>
+						<Modal id={idx.toString()} items={el} key={idx}>
 							<ModalItem key={idx.toString()} items={el} />
 						</Modal>
 					))}
