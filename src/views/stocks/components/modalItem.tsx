@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Card, CardContent} from '@/component/ui/atoms/card';
 import {type StockArray} from '@/types/fetch.stock';
 import {DateTime} from 'luxon';
@@ -7,7 +7,7 @@ type Props = {
 	items: StockArray;
 };
 
-export const ModalItem = ({items}: Props) => (
+export const ModalItem = memo(({items}: Props) => (
 	<Card className='border-[#306DDD]'>
 		<CardContent className='grid gap-4 place-items-center p-8 py-10'>
 			<div className=''>
@@ -66,4 +66,6 @@ export const ModalItem = ({items}: Props) => (
 			</div>
 		</CardContent>
 	</Card>
-);
+));
+
+ModalItem.displayName = 'ModalItem';

@@ -7,8 +7,8 @@ import {ModalItem} from '@/views/stocks/components/modalItem';
 import {Paginate} from '@/component/ui/molecules/paginate';
 import {DialogTrigger, Dialog} from '@/component/ui/atoms/dialog';
 import Datepicker from '@/component/ui/atoms/datepicker';
-import {Input} from '@/component/ui/atoms/input';
 import {type PagesProps} from '@/types/views';
+import {useToast} from '@/component/ui/atoms/use-toast';
 
 const DailyStock = ({setLoading, result}: PagesProps) => {
 	if (!result) {
@@ -16,7 +16,6 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 	}
 
 	let stockResult = result;
-
 	if (result.stockData.length === 0) {
 		stockResult = useStock({
 			symbol: 'ibm',
@@ -28,6 +27,7 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 		});
 	}
 
+	const {toast} = useToast();
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const itemsPerPage = useMemo(() => 18, []);
 	const totalPages = useMemo(() => Math.ceil(stockResult.stockData.length / itemsPerPage), []);
@@ -43,7 +43,7 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 		{
 			current: false,
 			element: (
-				<div className='grid grid-cols-4 gap-3 xl:grid-cols-6 xl:gap-2'>
+				<div className='bg-transparent grid grid-cols-1 md:grid-cols-2  gap-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-6 xl:gap-2'>
 					{data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((el, idx: number) => (
 						<Modal id={idx.toString()} items={el}>
 							<ModalItem key={idx.toString()} items={el} />
@@ -64,12 +64,12 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 				<div className='mx-auto flex flex-1 py-6 px-4'>
 					<main className='sm:px-6 lg:px-8'>
 						<div className='flex mb-4 justify-between'>
-							<Input className='w-4/12' placeholder='search company stock' />
+							<div></div>
 							<Datepicker />
 						</div>
 						<div className=''>
 							<Dialog>
-								<div className='hidden sm:block'>
+								<div className=''>
 									{tabs.map((tab, idx: number) => (
 										<DialogTrigger key={idx} value={`${idx}`}>
 											{tab.element}

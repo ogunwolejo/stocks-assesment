@@ -31,7 +31,7 @@ const Modal = memo(({id, children, items}: Props) => {
 				}}
 			>
 				<DialogTrigger>{children}</DialogTrigger>
-				<DialogContent className={`max-w-[687px] max-w-lg`}>
+				<DialogContent className='max-w-[687px] max-w-lg'>
 					<>
 						<DialogHeader className='pt-6'>
 							<div className='flex gap-3 items-center mb-4'>

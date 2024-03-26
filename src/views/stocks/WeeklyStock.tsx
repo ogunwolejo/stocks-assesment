@@ -1,4 +1,4 @@
-import React, {ReactNode, useEffect, useMemo, useState} from 'react';
+import React, {ReactNode, useMemo, useState} from 'react';
 import {useStock} from '@/hooks/useStock';
 import {StockFetchType} from '@/types/fetch.stock';
 import Modal from '@/views/stocks/components/modal';
@@ -9,10 +9,15 @@ import Datepicker from '@/component/ui/atoms/datepicker';
 import {Input} from '@/component/ui/atoms/input';
 import {type PagesProps} from '@/types/views';
 import Loader from '@/component/ui/atoms/Loader';
+import {useInput} from '@/hooks/useInput';
+import {Toaster} from '@/component/ui/atoms/toaster';
+import {useToast} from '@/component/ui/atoms/use-toast';
 
 const WeeklyStock = ({setLoading}: PagesProps) => {
+	const {toast} = useToast();
+	const [val, setVal] = useInput('IBM');
 	const stockResult = useStock({
-		symbol: 'ibm',
+		symbol: val,
 		type: StockFetchType.WEEKLY,
 		adjustable: false,
 		set: {
@@ -35,7 +40,7 @@ const WeeklyStock = ({setLoading}: PagesProps) => {
 		{
 			current: false,
 			element: (
-				<div className='grid grid-cols-4 gap-3 xl:grid-cols-6 xl:gap-2'>
+				<div className='bg-transparent grid grid-cols-1 md:grid-cols-2  gap-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-6 xl:gap-2'>
 					{data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((el, idx: number) => (
 						<Modal id={idx.toString()} items={el}>
 							<ModalItem key={idx.toString()} items={el} />
@@ -50,18 +55,35 @@ const WeeklyStock = ({setLoading}: PagesProps) => {
 		return <Loader />;
 	}
 
+	if (stockResult.errorMessage.length > 0) {
+		toast({
+			type: 'background',
+			open: true,
+			variant: 'destructive',
+			title: stockResult.errorMessage,
+			className: 'border-2 border-error text-error',
+		});
+	}
+
 	return (
 		<>
 			<div className='flex flex-col flex-1'>
 				<div className='flex flex-1 py-6 px-4'>
 					<main className='sm:px-6 lg:px-8'>
 						<div className='flex mb-4 justify-between'>
-							<Input className='w-4/12' placeholder='search company stock' />
+							<Input
+								className='w-4/12'
+								placeholder='search company stock'
+								value={val}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+									setVal(e.target.value);
+								}}
+							/>
 							<Datepicker />
 						</div>
 						<div className='mt-2'>
 							<Dialog>
-								<div className='hidden sm:block'>
+								<div className=''>
 									{tabs.map((tab, idx: number) => (
 										<DialogTrigger key={idx} value={`${idx}`}>
 											{tab.element}
@@ -72,8 +94,9 @@ const WeeklyStock = ({setLoading}: PagesProps) => {
 						</div>
 					</main>
 				</div>
+				<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
 			</div>
-			<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
+			<Toaster />
 		</>
 	);
 };

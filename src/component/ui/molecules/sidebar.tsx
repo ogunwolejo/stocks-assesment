@@ -2,7 +2,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {NavLink, useLocation} from 'react-router-dom';
 import SidebarLinkGroup from '@/component/ui/atoms/sidebarGroups';
-import {secondaryRoutes, stockRoutes} from '@/routes';
+import {stockRoutes} from '@/routes';
 
 type SidebarProps = {
 	sidebarOpen: boolean;
@@ -157,7 +157,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
 								)}
 							</SidebarLinkGroup>
 
-							{secondaryRoutes.map((routes, idx: number) => (
+							{/* - secondaryRoutes.map((routes, idx: number) => (
 								<li key={idx}>
 									<NavLink
 										to={routes.path}
@@ -169,7 +169,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
 										<div className='capitalize'>{routes.title}</div>
 									</NavLink>
 								</li>
-							))}
+							)) */}
 						</ul>
 					</div>
 				</nav>

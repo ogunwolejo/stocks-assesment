@@ -13,7 +13,7 @@ const Dashboard: React.FC = memo(() => {
 				<div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
 					<Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 					<main className='bg-gray w-full'>
-						<div className='mx-auto py-4 px-4 md:p-6 2xl:p-10'>
+						<div className='bg-transparent mx-auto py-4 px-4 md:p-6 2xl:p-10'>
 							<Outlet />
 						</div>
 					</main>
