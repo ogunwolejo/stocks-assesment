@@ -1,42 +1,45 @@
-import React, {useState, Fragment, useEffect, Suspense, lazy} from 'react';
+import React, {useState, Fragment, Suspense, lazy} from 'react';
 import {Routes, Route} from 'react-router-dom';
 import Loader from '@/component/ui/atoms/Loader';
 import Dashboard from '@/layout/dashboard';
 import routes from '@/routes';
+import {useStock} from '@/hooks/useStock';
+import {StockFetchType} from '@/types/fetch.stock';
 
 const DailyStockPage = lazy(async () => import('@/views/stocks/DailyStock'));
 
 function App() {
 	const [loading, setLoading] = useState<boolean>(true);
-	useEffect(() => {
-		setTimeout(() => {
-			setLoading(false);
-		}, 3000);
-	}, []);
+	const stockResult = useStock({
+		symbol: 'ibm',
+		type: StockFetchType.DAILY,
+		adjustable: true,
+		set: {
+			setLoading,
+		},
+	});
 
 	return loading ? (
 		<Loader />
 	) : (
 		<Fragment>
 			<Routes>
-				<Route path={'/'} element={<Dashboard />} >
-					{/* eslint-disable-next-line @typescript-eslint/no-unsafe-call */}
-					<Route index element={
-						<Suspense fallback={<Loader/>}>
-							<DailyStockPage/>
-						</Suspense>
-					}/>
+				<Route path={'/'} element={<Dashboard />}>
+					<Route
+						index
+						element={
+							<Suspense fallback={<Loader />}>
+								{!loading && <DailyStockPage setLoading={setLoading} result={stockResult} />}
+							</Suspense>
+						}
+					/>
 					{routes.map((route, index: number) => {
 						const {path, component: Component} = route;
 						return (
 							<Route
 								key={index}
-								path={`:${path}`}
-								element={
-									<Suspense fallback={<Loader />}>
-										<Component />
-									</Suspense>
-								}
+								path={path}
+								element={<Suspense fallback={<Loader />}>{!loading && <Component setLoading={setLoading} />}</Suspense>}
 							/>
 						);
 					})}

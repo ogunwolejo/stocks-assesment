@@ -8,11 +8,11 @@ const Dashboard: React.FC = memo(() => {
 
 	return (
 		<div className='dark:bg-boxdark-2 dark:text-bodydark'>
-			<div className='flex h-screen overflow-hidden'>
+			<div className='flex flex-1 h-screen overflow-hidden'>
 				<Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 				<div className='relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden'>
 					<Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-					<main className='bg-bodydark w-full h-full'>
+					<main className='bg-gray w-full'>
 						<div className='mx-auto py-4 px-4 md:p-6 2xl:p-10'>
 							<Outlet />
 						</div>
