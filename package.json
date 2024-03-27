@@ -91,5 +91,5 @@
     "prop-types": "15.8.1",
     "webpack": "5.90.1"
   },
-  "cracoConfig": "./"
+  "cracoConfig": "./craco.config.js"
 }
