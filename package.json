@@ -47,7 +47,7 @@
   "scripts": {
     "start": "craco start",
     "start:windows": "set BROWSER=NONE && set PORT=3000 && craco start",
-    "build": "craco build",
+    "build": "react-scripts build",
     "test": "craco test",
     "eject": "craco eject",
     "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc"
