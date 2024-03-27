@@ -1,4 +1,4 @@
-import React, {useState, Fragment, Suspense, lazy, useEffect} from 'react';
+import React, {Fragment, Suspense, lazy} from 'react';
 import {Routes, Route} from 'react-router-dom';
 import Loader from '@/component/ui/atoms/Loader';
 import Dashboard from '@/layout/dashboard';
