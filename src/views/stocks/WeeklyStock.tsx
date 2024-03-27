@@ -1,29 +1,32 @@
-import React, {type ReactNode, useMemo, useState} from 'react';
+import React, {type ReactNode, useMemo, useState, useRef, useDeferredValue, useEffect, useLayoutEffect} from 'react';
 import {useStock} from '@/hooks/useStock';
 import {StockFetchType} from '@/types/fetch.stock';
 import Modal from '@/views/stocks/components/modal';
 import {ModalItem} from '@/views/stocks/components/modalItem';
 import {Dialog, DialogTrigger} from '@/component/ui/atoms/dialog';
 import {Paginate} from '@/component/ui/molecules/paginate';
-import Datepicker from '@/component/ui/atoms/datepicker';
 import {Input} from '@/component/ui/atoms/input';
-import {type PagesProps} from '@/types/views';
 import Loader from '@/component/ui/atoms/Loader';
-import {useInput} from '@/hooks/useInput';
-import {Toaster} from '@/component/ui/atoms/toaster';
-import {useToast} from '@/component/ui/atoms/use-toast';
+import {MagnifyingGlassIcon} from '@heroicons/react/24/outline';
+import Alert from '@/component/ui/atoms/alert';
 
-const WeeklyStock = ({setLoading}: PagesProps) => {
-	const {toast} = useToast();
-	const [val, setVal] = useInput('IBM');
+const WeeklyStock = () => {
+	const [searchText, setSearchText] = useState<string>('ibm');
+	const deferredSearchText: string = useDeferredValue(searchText);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const stockResult = useStock({
-		symbol: val,
+		symbol: deferredSearchText,
 		type: StockFetchType.WEEKLY,
 		adjustable: false,
-		set: {
-			setLoading,
-		},
 	});
+
+	const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			if (inputRef.current !== null) {
+				setSearchText(inputRef.current.value);
+			}
+		}
+	};
 
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const itemsPerPage = useMemo(() => 18, []);
@@ -55,48 +58,49 @@ const WeeklyStock = ({setLoading}: PagesProps) => {
 		return <Loader />;
 	}
 
-	if (stockResult.errorMessage.length > 0) {
-		toast({
-			type: 'background',
-			open: true,
-			variant: 'destructive',
-			title: stockResult.errorMessage,
-			className: 'border-2 border-error text-error',
-		});
-	}
-
 	return (
 		<>
-			<div className='flex flex-col flex-1'>
-				<div className='flex flex-1 py-6 px-4'>
-					<main className='sm:px-6 lg:px-8'>
-						<div className='flex mb-4 justify-between'>
-							<Input
-								className='w-4/12'
-								placeholder='search company stock'
-								value={val}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-									setVal(e.target.value);
-								}}
-							/>
-							<Datepicker />
-						</div>
-						<div className='mt-2'>
-							<Dialog>
-								<div className=''>
-									{tabs.map((tab, idx: number) => (
-										<DialogTrigger key={idx} value={`${idx}`}>
-											{tab.element}
-										</DialogTrigger>
-									))}
+			{tabs.length > 0 ? (
+				<div className='flex flex-col h-auto'>
+					<div className='flex flex-1 py-6 px-4'>
+						<main className='sm:px-6 lg:px-8'>
+							<div className='flex mb-4 justify-start'>
+								<div className='relative'>
+									<div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+										<MagnifyingGlassIcon className='h-5 w-5 text-form-stroke' aria-hidden='true' />
+									</div>
+									<Input
+										id='search'
+										type='text'
+										className='block w-full h-11 rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-body-text ring-1 ring-inset ring-form-stroke placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+										placeholder='search company stock'
+										ref={inputRef}
+										// OnChange={handleSearchChange}
+										onKeyDown={handleSearchKeyDown}
+									/>
 								</div>
-							</Dialog>
-						</div>
-					</main>
+							</div>
+							<div className='mt-2'>
+								<Dialog>
+									<div className=''>
+										{tabs.map((tab, idx: number) => (
+											<DialogTrigger key={idx} value={`${idx}`}>
+												{tab.element}
+											</DialogTrigger>
+										))}
+									</div>
+								</Dialog>
+							</div>
+						</main>
+					</div>
+					<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
 				</div>
-				<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
-			</div>
-			<Toaster />
+			) : (
+				<div className='justify-center text-center'>
+					<div className='font-base text-graydark font-bold'> No stock was found </div>
+				</div>
+			)}
+			{stockResult.errorMsg.length > 0 && <Alert message={stockResult.errorMsg} />}
 		</>
 	);
 };

@@ -1,14 +1,10 @@
-import React, {lazy} from 'react';
-const dailyStockPage = lazy(async () => import('@/views/stocks/DailyStock'));
-const weeklyStockPage = lazy(async () => import('@/views/stocks/WeeklyStock'));
-const monthlyStockPage = lazy(async () => import('@/views/stocks/MonthlyStock'));
+import weeklyStockPage from '@/views/stocks/WeeklyStock';
+import monthlyStockPage from '@/views/stocks/MonthlyStock';
+
+// Const weeklyStockPage = lazy(async () => import('@/views/stocks/WeeklyStock'));
+// Const monthlyStockPage = lazy(async () => import('@/views/stocks/MonthlyStock'));
 
 export const stockRoutes = [
-	{
-		path: '/',
-		title: 'daily',
-		component: dailyStockPage,
-	},
 	{
 		path: 'week',
 		title: 'weekly',
@@ -21,7 +17,5 @@ export const stockRoutes = [
 	},
 ];
 
-const coreRoutes = [...stockRoutes];
-
-const routes = [...coreRoutes];
+const routes = [...stockRoutes];
 export default routes;

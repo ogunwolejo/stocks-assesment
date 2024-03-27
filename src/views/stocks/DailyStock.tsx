@@ -1,6 +1,4 @@
 import React, {type ReactNode, useMemo, useState} from 'react';
-import {useStock} from '@/hooks/useStock';
-import {StockFetchType} from '@/types/fetch.stock';
 import Loader from '@/component/ui/atoms/Loader';
 import Modal from '@/views/stocks/components/modal';
 import {ModalItem} from '@/views/stocks/components/modalItem';
@@ -8,34 +6,18 @@ import {Paginate} from '@/component/ui/molecules/paginate';
 import {DialogTrigger, Dialog} from '@/component/ui/atoms/dialog';
 import Datepicker from '@/component/ui/atoms/datepicker';
 import {type PagesProps} from '@/types/views';
-import {useToast} from '@/component/ui/atoms/use-toast';
+import Alert from '@/component/ui/atoms/alert';
 
-const DailyStock = ({setLoading, result}: PagesProps) => {
-	if (!result) {
-		return <> Not Found!! </>;
-	}
-
-	let stockResult = result;
-	if (result.stockData.length === 0) {
-		stockResult = useStock({
-			symbol: 'ibm',
-			type: StockFetchType.DAILY,
-			adjustable: true,
-			set: {
-				setLoading,
-			},
-		});
-	}
-
-	const {toast} = useToast();
+const DailyStock = ({result, fetching, errorMsg}: PagesProps) => {
+	const stockResult = result;
 	const [currentPage, setCurrentPage] = useState<number>(1);
 	const itemsPerPage = useMemo(() => 18, []);
-	const totalPages = useMemo(() => Math.ceil(stockResult.stockData.length / itemsPerPage), []);
+	const totalPages = useMemo(() => Math.ceil(stockResult.length / itemsPerPage), []);
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page);
 	};
 
-	const data = stockResult.stockData;
+	const data = stockResult;
 	const tabs: Array<{
 		current: boolean;
 		element: ReactNode;
@@ -54,7 +36,7 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 		},
 	];
 
-	if (stockResult.fetching === 'fetching') {
+	if (fetching === 'fetching') {
 		return <Loader />;
 	}
 
@@ -82,6 +64,7 @@ const DailyStock = ({setLoading, result}: PagesProps) => {
 				</div>
 				<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
 			</div>
+			{errorMsg.length > 0 && <Alert message={errorMsg} />}
 		</>
 	);
 };

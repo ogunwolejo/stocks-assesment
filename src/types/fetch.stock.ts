@@ -1,4 +1,5 @@
 import {PagesProps} from '@/types/views';
+import {Dispatch, SetStateAction} from 'react';
 
 export enum StockFetchType {
 	DAILY = 'DAILY',
@@ -10,7 +11,7 @@ export type FetchStock = {
 	type: StockFetchType;
 	adjustable: boolean;
 	symbol: string;
-	set: PagesProps;
+	// SetFetch: Dispatch<SetStateAction<'fetching' | 'done' | 'error'>>;
 };
 
 export type StockData = {

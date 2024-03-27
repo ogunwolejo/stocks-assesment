@@ -1,28 +1,23 @@
-import React, {ReactNode, useMemo, useState} from 'react';
+import React, {type ReactNode, useDeferredValue, useMemo, useRef, useState} from 'react';
 import {useStock} from '@/hooks/useStock';
 import {StockFetchType} from '@/types/fetch.stock';
 import {Dialog, DialogTrigger} from '@/component/ui/atoms/dialog';
 import {Paginate} from '@/component/ui/molecules/paginate';
 import Modal from '@/views/stocks/components/modal';
 import {ModalItem} from '@/views/stocks/components/modalItem';
-import Datepicker from '@/component/ui/atoms/datepicker';
 import {Input} from '@/component/ui/atoms/input';
-import {type PagesProps} from '@/types/views';
 import Loader from '@/component/ui/atoms/Loader';
-import {useInput} from '@/hooks/useInput';
-import {Toaster} from '@/component/ui/atoms/toaster';
-import {useToast} from '@/component/ui/atoms/use-toast';
+import {MagnifyingGlassIcon} from '@heroicons/react/24/outline';
+import Alert from '@/component/ui/atoms/alert';
 
-const MonthlyStock = ({setLoading}: PagesProps) => {
-	const {toast} = useToast();
-	const [val, setVal] = useInput('IBM');
+const MonthlyStock = () => {
+	const [searchText, setSearchText] = useState<string>('ibm');
+	const deferredSearchText: string = useDeferredValue(searchText);
+	const inputRef = useRef<HTMLInputElement>(null);
 	const stockResult = useStock({
-		symbol: val,
+		symbol: deferredSearchText,
 		type: StockFetchType.MONTHLY,
 		adjustable: false,
-		set: {
-			setLoading,
-		},
 	});
 
 	const [currentPage, setCurrentPage] = useState<number>(1);
@@ -30,6 +25,14 @@ const MonthlyStock = ({setLoading}: PagesProps) => {
 	const totalPages = useMemo(() => Math.ceil(stockResult.stockData.length / itemsPerPage), []);
 	const handlePageChange = (page: number) => {
 		setCurrentPage(page);
+	};
+
+	const handleSearchKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		if (event.key === 'Enter') {
+			if (inputRef.current !== null) {
+				setSearchText(inputRef.current.value);
+			}
+		}
 	};
 
 	const data = stockResult.stockData;
@@ -42,7 +45,7 @@ const MonthlyStock = ({setLoading}: PagesProps) => {
 			element: (
 				<div className='bg-transparent grid grid-cols-1 md:grid-cols-2  gap-2 lg:grid-cols-3 lg:gap-3 xl:grid-cols-6 xl:gap-2'>
 					{data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((el, idx: number) => (
-						<Modal id={idx.toString()} items={el}>
+						<Modal id={idx.toString()} items={el} key={idx}>
 							<ModalItem key={idx.toString()} items={el} />
 						</Modal>
 					))}
@@ -57,36 +60,47 @@ const MonthlyStock = ({setLoading}: PagesProps) => {
 
 	return (
 		<>
-			<div className='flex flex-col flex-1'>
-				<div className='mx-auto flex flex-1 py-6 px-4'>
-					<main className='sm:px-6lg:px-8'>
-						<div className='flex mb-4 justify-between'>
-							<Input
-								className='w-4/12'
-								placeholder='search company stock'
-								value={val}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-									setVal(e.target.value);
-								}}
-							/>
-							<Datepicker />
-						</div>
-						<div className='mt-2'>
-							<Dialog>
-								<div className=''>
-									{tabs.map((tab, idx: number) => (
-										<DialogTrigger key={idx} value={`${idx}`}>
-											{tab.element}
-										</DialogTrigger>
-									))}
+			{tabs.length > 0 ? (
+				<div className='flex flex-col flex-1'>
+					<div className='flex flex-1 py-6 px-4'>
+						<main className='sm:px-6 lg:px-8'>
+							<div className='flex mb-4 justify-start'>
+								<div className='relative'>
+									<div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+										<MagnifyingGlassIcon className='h-5 w-5 text-form-stroke' aria-hidden='true' />
+									</div>
+									<Input
+										id='search'
+										type='text'
+										className='block w-full h-11 rounded-md border-0 bg-white py-1.5 pl-10 pr-3 text-body-text ring-1 ring-inset ring-form-stroke placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6'
+										placeholder='search company stock'
+										ref={inputRef}
+										// OnChange={handleSearchChange}
+										onKeyDown={handleSearchKeyDown}
+									/>
 								</div>
-							</Dialog>
-						</div>
-					</main>
+							</div>
+							<div className='mt-2'>
+								<Dialog>
+									<div className=''>
+										{tabs.map((tab, idx: number) => (
+											<DialogTrigger key={idx} value={`${idx}`}>
+												{tab.element}
+											</DialogTrigger>
+										))}
+									</div>
+								</Dialog>
+							</div>
+						</main>
+					</div>
+					<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
 				</div>
-				<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
-			</div>
-			<Toaster />
+			) : (
+				<div className='flex flex-col flex-1 justify-center text-center'>
+					<div className='font-base text-graydark font-bold'> No stock was found </div>
+				</div>
+			)}
+			{stockResult.errorMsg.length > 0 && <Alert message={stockResult.errorMsg} />}
 		</>
 	);
 };
