@@ -90,8 +90,5 @@
     "prettier": "3.0.3",
     "prop-types": "15.8.1",
     "webpack": "5.90.1"
-  },
-  "engines": {
-    "node": "^20"
   }
 }
