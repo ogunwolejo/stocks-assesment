@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ChevronLeft, ChevronRight, MoreHorizontal} from 'lucide-react';
 
 import {cn} from '@/utils/cn';
-import {ButtonProps, buttonVariants} from '@/component/ui/atoms/button';
+import {type ButtonProps, buttonVariants} from '@/component/ui/atoms/button';
 
 const Pagination = ({className, ...props}: React.ComponentProps<'nav'>) => (
 	<nav
@@ -29,7 +29,7 @@ PaginationItem.displayName = 'PaginationItem';
 type PaginationLinkProps = {
 	isActive?: boolean;
 } & Pick<ButtonProps, 'size'> &
-	React.ComponentProps<'a'>;
+React.ComponentProps<'a'>;
 
 const PaginationLink = ({className, isActive, size = 'icon', ...props}: PaginationLinkProps) => (
 	<a

@@ -1,4 +1,4 @@
-import React, {JSX, memo, useState} from 'react';
+import React, {type JSX, memo} from 'react';
 import {
 	PaginationContent,
 	PaginationLink,

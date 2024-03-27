@@ -37,9 +37,12 @@ export const useStock = ({type, symbol, adjustable = false}: FetchStock) => {
 			try {
 				const symbolToUpper = symbol.toUpperCase();
 				const {signal} = abortControllerRef;
-				const stock = await fetch(`${stockUrl}function=TIME_SERIES_${type}&symbol=${symbolToUpper}&apikey=${stockKey}`, {
-					signal,
-				});
+				const stock = await fetch(
+					`${stockUrl}function=TIME_SERIES_${type}&symbol=${symbolToUpper}&apikey=${stockKey}`,
+					{
+						signal,
+					},
+				);
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 				const response = await stock.json();
 				const responseData = [];

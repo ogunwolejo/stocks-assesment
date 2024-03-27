@@ -39,7 +39,7 @@ export type ButtonProps = {
 	loading?: boolean;
 	loadingText?: string | undefined;
 } & React.ButtonHTMLAttributes<HTMLButtonElement> &
-	VariantProps<typeof buttonVariants>;
+VariantProps<typeof buttonVariants>;
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	({className, variant, size, asChild = false, children, loading, loadingText, ...props}, ref) => {
@@ -48,7 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			<Comp className={cn(buttonVariants({variant, size, className}))} ref={ref} {...props}>
 				{loading ? (
 					<>
-						<Loader2 className='mr-2 h-4 w-4 animate-spin' /> {loadingText !== undefined ? loadingText : 'Please wait'}
+						<Loader2 className='mr-2 h-4 w-4 animate-spin' /> {loadingText ?? 'Please wait'}
 					</>
 				) : (
 					children
