@@ -47,7 +47,7 @@
   "scripts": {
     "start": "BROWSER=NONE PORT=3000 craco start",
     "start:windows": "set BROWSER=NONE && set PORT=3000 && craco start",
-    "build": "react-scripts build",
+    "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
@@ -90,5 +90,6 @@
     "prettier": "3.0.3",
     "prop-types": "15.8.1",
     "webpack": "5.90.1"
-  }
+  },
+  "cracoConfig": "./"
 }
