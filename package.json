@@ -45,8 +45,8 @@
     "zustand": "^4.4.6"
   },
   "scripts": {
-    "start": "BROWSER=NONE PORT=9000 craco start",
-    "start:windows": "set BROWSER=NONE && set PORT=8772 && craco start",
+    "start": "BROWSER=NONE PORT=3000 craco start",
+    "start:windows": "set BROWSER=NONE && set PORT=3000 && craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "craco eject",
