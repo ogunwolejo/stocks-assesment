@@ -100,7 +100,7 @@ const WeeklyStock = () => {
 					<div className='font-base text-graydark font-bold'> No stock was found </div>
 				</div>
 			)}
-			{stockResult.errorMsg.length > 0 && <Alert message={stockResult.errorMsg} />}
+			{stockResult.errorMsg.length > 0 && <Alert message={'Unable to fetch API'} />}
 		</>
 	);
 };

@@ -64,7 +64,7 @@ const DailyStock = ({result, fetching, errorMsg}: PagesProps) => {
 				</div>
 				<Paginate handlePageChange={handlePageChange} totalPages={totalPages} currentPage={currentPage} />
 			</div>
-			{errorMsg.length > 0 && <Alert message={errorMsg} />}
+			{errorMsg.length > 0 && <Alert message={'Unable to fetch API'} />}
 		</>
 	);
 };
