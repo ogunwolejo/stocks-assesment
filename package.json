@@ -47,7 +47,7 @@
   "scripts": {
     "start": "BROWSER=NONE PORT=3000 craco start",
     "start:windows": "set BROWSER=NONE && set PORT=3000 && craco start",
-    "build": "npm run build",
+    "build": "react-scripts build",
     "test": "craco test",
     "eject": "craco eject",
     "lint": "eslint src/**/*.{js,jsx,ts,tsx,json}",
